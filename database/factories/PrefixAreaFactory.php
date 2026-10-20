@@ -18,7 +18,7 @@ class PrefixAreaFactory extends Factory
     public function definition(): array
     {
         return [
-            'prefix' => strtoupper(fake()->lexify('??')),
+            'prefix' => strtoupper(fake()->unique()->lexify('??')),
             'descriptions' => fake()->sentence(),
         ];
     }
