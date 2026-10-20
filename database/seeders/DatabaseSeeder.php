@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             DistrictSeeder::class,
             VillageSeeder::class,
+            HamletSeeder::class,
         ]);
     }
 }
