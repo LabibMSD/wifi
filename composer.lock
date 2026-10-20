@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1662c175feee9c7fd988db92d670a051",
+    "content-hash": "3cfad1c36f9a0ebcdea8b817ba6c7974",
     "packages": [
         {
             "name": "brick/math",
@@ -1058,6 +1058,67 @@
                 }
             ],
             "time": "2026-08-24T17:13:02+00:00"
+        },
+        {
+            "name": "hatchyu/laravel-sequence",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rajeshmk/laravel-sequence.git",
+                "reference": "73eef90e2928980972b2eb517d063361e0321369"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rajeshmk/laravel-sequence/zipball/73eef90e2928980972b2eb517d063361e0321369",
+                "reference": "73eef90e2928980972b2eb517d063361e0321369",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^10.0||^11.0||^12.0||^13.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "driftingly/rector-laravel": "^2.1",
+                "laravel/pint": "^1.28",
+                "pestphp/pest": "^2.8",
+                "pestphp/pest-plugin-laravel": "^2.0",
+                "rector/rector": "^2.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Hatchyu\\Sequence\\SequenceServiceProvider"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "helper-functions/sequence-helpers.php"
+                ],
+                "psr-4": {
+                    "Hatchyu\\Sequence\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Raju Koyilandy",
+                    "email": "hello@rajeshmk.com"
+                }
+            ],
+            "description": "Concurrency-safe Laravel sequence numbers using database transactions, row-level locking, grouping, formatting, and model integration.",
+            "support": {
+                "issues": "https://github.com/rajeshmk/laravel-sequence/issues",
+                "source": "https://github.com/rajeshmk/laravel-sequence/tree/v2.0.0"
+            },
+            "time": "2026-03-23T08:34:03+00:00"
         },
         {
             "name": "laravel/framework",
