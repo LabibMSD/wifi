@@ -28,4 +28,9 @@ class Village extends Model
     {
         return $this->hasMany(Hamlet::class);
     }
+
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class);
+    }
 }
