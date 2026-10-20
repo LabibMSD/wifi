@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('villages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('district_id')->constrained('districts');
+            $table->foreignId('prefix_area_id')->constrained('prefix_areas');
             $table->string('name');
             $table->timestamps();
         });
