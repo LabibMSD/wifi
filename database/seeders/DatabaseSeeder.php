@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             VillageSeeder::class,
             HamletSeeder::class,
             PackageSeeder::class,
+            SystemSeeder::class,
         ]);
     }
 }
