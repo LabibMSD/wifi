@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Override;
 
-#[Fillable(['name', 'district_id', 'village_id', 'hamlet_id', 'package_id', 'system_id'])]
+#[Fillable(['name', 'hamlet_id', 'package_id', 'system_id'])]
 class Customer extends Model
 {
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
@@ -20,7 +20,7 @@ class Customer extends Model
     #[Override]
     protected function sequenceColumns(): SequenceColumnCollection
     {
-        $prefix = $this->village->prefixArea->prefix;
+        $prefix = $this->hamlet->village->prefixArea->prefix;
 
         return SequenceColumnCollection::collection()
             ->column(
@@ -35,16 +35,6 @@ class Customer extends Model
     public function save(array $options = []): bool
     {
         return DB::transaction(fn () => parent::save($options));
-    }
-
-    public function district(): BelongsTo
-    {
-        return $this->belongsTo(District::class);
-    }
-
-    public function village(): BelongsTo
-    {
-        return $this->belongsTo(Village::class);
     }
 
     public function hamlet(): BelongsTo

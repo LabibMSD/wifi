@@ -21,10 +21,10 @@ class CustomersTable
                 TextColumn::make('name')
                     ->label('Name')
                     ->searchable(),
-                TextColumn::make('district.name')
+                TextColumn::make('hamlet.village.district.name')
                     ->label('District')
                     ->searchable(),
-                TextColumn::make('village.name')
+                TextColumn::make('hamlet.village.name')
                     ->label('Village')
                     ->searchable(),
                 TextColumn::make('hamlet.name')

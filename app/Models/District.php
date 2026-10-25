@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 #[Fillable(['name'])]
 class District extends Model
@@ -18,8 +19,8 @@ class District extends Model
         return $this->hasMany(Village::class);
     }
 
-    public function customers(): HasMany
+    public function hamlets(): HasManyThrough
     {
-        return $this->hasMany(Customer::class);
+        return $this->hasManyThrough(Hamlet::class, Village::class);
     }
 }

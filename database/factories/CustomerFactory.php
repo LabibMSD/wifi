@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Customer;
+use App\Models\Hamlet;
 use App\Models\Package;
 use App\Models\System;
-use App\Models\Village;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,19 +20,13 @@ class CustomerFactory extends Factory
      */
     public function definition(): array
     {
-        $village = Village::query()
-            ->whereHas('hamlets')
-            ->with('hamlets')
-            ->inRandomOrder()
-            ->firstOrFail();
+        $hamlet = Hamlet::query()->inRandomOrder()->firstOrFail();
 
         return [
             'name' => fake()->name(),
-            'district_id' => $village->district_id,
-            'village_id' => $village->id,
-            'hamlet_id' => $village->hamlets->random()->id,
-            'package_id' => Package::query()->inRandomOrder()->first()->id,
-            'system_id' => System::query()->inRandomOrder()->first()->id,
+            'hamlet_id' => $hamlet->id,
+            'package_id' => Package::query()->inRandomOrder()->firstOrFail()->id,
+            'system_id' => System::query()->inRandomOrder()->firstOrFail()->id,
         ];
     }
 }

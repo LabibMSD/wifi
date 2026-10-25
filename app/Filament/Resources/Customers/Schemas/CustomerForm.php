@@ -12,6 +12,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Operation;
+use Illuminate\Database\Eloquent\Model;
 
 class CustomerForm
 {
@@ -31,22 +32,26 @@ class CustomerForm
                     ->label('District')
                     ->options(fn () => District::orderBy('name')->pluck('name', 'id'))
                     ->searchable()
+                    ->afterStateHydrated(fn (Select $component, ?Model $record) => $component->state($record?->hamlet?->village?->district_id))
                     ->afterStateUpdated(function (Set $set) {
                         $set('village_id', null);
                         $set('hamlet_id', null);
                     })
+                    ->dehydrated(false)
                     ->required()
                     ->live(),
-                Select::make('village_id')
+                Select::make('village')
                     ->label('Village')
                     ->options(fn (Get $get) => Village::where('district_id', $get('district_id'))
                         ->orderBy('name')->pluck('name', 'id'))
                     ->searchable()
+                    ->afterStateHydrated(fn (Select $component, ?Model $record) => $component->state($record?->hamlet?->village_id))
                     ->afterStateUpdated(fn (Set $set) => $set('hamlet_id', null))
                     ->disabled(fn (Get $get) => blank($get('district_id')))
+                    ->dehydrated(false)
                     ->required()
                     ->live(),
-                Select::make('hamlet_id')
+                Select::make('hamlet')
                     ->label('Hamlet')
                     ->options(fn (Get $get) => Hamlet::where('village_id', $get('village_id'))
                         ->orderBy('name')->pluck('name', 'id'))
