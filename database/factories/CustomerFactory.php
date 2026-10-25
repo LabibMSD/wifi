@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\Customer;
 use App\Models\Hamlet;
 use App\Models\Package;
-use App\Models\System;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,7 +25,6 @@ class CustomerFactory extends Factory
             'name' => fake()->name(),
             'hamlet_id' => $hamlet->id,
             'package_id' => Package::query()->inRandomOrder()->firstOrFail()->id,
-            'system_id' => System::query()->inRandomOrder()->firstOrFail()->id,
         ];
     }
 }

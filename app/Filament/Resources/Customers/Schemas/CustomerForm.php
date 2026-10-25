@@ -40,7 +40,7 @@ class CustomerForm
                     ->dehydrated(false)
                     ->required()
                     ->live(),
-                Select::make('village')
+                Select::make('village_id')
                     ->label('Village')
                     ->options(fn (Get $get) => Village::where('district_id', $get('district_id'))
                         ->orderBy('name')->pluck('name', 'id'))
@@ -51,7 +51,7 @@ class CustomerForm
                     ->dehydrated(false)
                     ->required()
                     ->live(),
-                Select::make('hamlet')
+                Select::make('hamlet_id')
                     ->label('Hamlet')
                     ->options(fn (Get $get) => Hamlet::where('village_id', $get('village_id'))
                         ->orderBy('name')->pluck('name', 'id'))
@@ -62,10 +62,6 @@ class CustomerForm
                     ->label('Package')
                     ->relationship('package')
                     ->getOptionLabelFromRecordUsing(fn (Package $record) => $record->display_name)
-                    ->required(),
-                Select::make('system_id')
-                    ->label('System')
-                    ->relationship('system', 'name')
                     ->required(),
             ]);
     }

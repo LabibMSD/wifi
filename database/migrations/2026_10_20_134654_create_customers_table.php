@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('hamlet_id')->constrained('hamlets');
             $table->foreignId('package_id')->constrained('packages');
-            $table->foreignId('system_id')->constrained('systems');
             $table->timestamps();
         });
     }

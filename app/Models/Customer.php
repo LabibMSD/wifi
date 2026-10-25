@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Override;
 
-#[Fillable(['name', 'hamlet_id', 'package_id', 'system_id'])]
+#[Fillable(['name', 'hamlet_id', 'package_id'])]
 class Customer extends Model
 {
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
@@ -45,10 +45,5 @@ class Customer extends Model
     public function package(): BelongsTo
     {
         return $this->belongsTo(Package::class);
-    }
-
-    public function system(): BelongsTo
-    {
-        return $this->belongsTo(System::class);
     }
 }
