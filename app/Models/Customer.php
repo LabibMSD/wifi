@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use Hatchyu\Sequence\Support\SequenceColumnCollection;
 use Hatchyu\Sequence\Support\SequenceConfig;
 use Hatchyu\Sequence\Traits\HasSequence;
@@ -29,6 +30,11 @@ class Customer extends Model
                     ->groupBy($prefix)
                     ->padLength(5)
             );
+    }
+
+    public function save(array $options = []): bool
+    {
+        return DB::transaction(fn () => parent::save($options));
     }
 
     public function district(): BelongsTo

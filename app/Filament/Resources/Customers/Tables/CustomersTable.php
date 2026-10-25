@@ -30,17 +30,8 @@ class CustomersTable
                 TextColumn::make('hamlet.name')
                     ->label('Hamlet')
                     ->searchable(),
-                TextColumn::make('package.speed_mbps')
-                    ->label('Speed')
-                    ->suffix(' Mbps')
-                    ->searchable(),
-                TextColumn::make('package.price')
-                    ->label('Price')
-                    ->money('IDR', decimalPlaces: 0)
-                    ->searchable(),
-                TextColumn::make('system.name')
-                    ->label('System')
-                    ->searchable(),
+                TextColumn::make('package.display_name')
+                    ->label('Package'),
                 TextColumn::make('created_at')
                     ->label('Created at')
                     ->dateTime()
