@@ -15,6 +15,8 @@ use Override;
 #[Fillable(['name', 'hamlet_id', 'package_id'])]
 class Customer extends Model
 {
+    public const SYSTEM = 'PPOE';
+
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
     use HasFactory, HasSequence;
     #[Override]

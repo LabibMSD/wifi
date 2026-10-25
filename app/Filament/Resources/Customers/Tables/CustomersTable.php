@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Customers\Tables;
 
+use App\Models\Customer;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -32,6 +33,9 @@ class CustomersTable
                     ->searchable(),
                 TextColumn::make('package.display_name')
                     ->label('Package'),
+                TextColumn::make('system')
+                    ->label('System')
+                    ->state(Customer::SYSTEM),
                 TextColumn::make('created_at')
                     ->label('Created at')
                     ->dateTime()
