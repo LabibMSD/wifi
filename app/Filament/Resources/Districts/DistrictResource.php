@@ -11,14 +11,32 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DistrictResource extends Resource
 {
     protected static ?string $model = District::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMap;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return 'Region';
+    }
+
+    public static function getModelLabel(): string
+    {
+        return 'District';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Districts';
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -11,12 +11,30 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class PackageResource extends Resource
 {
     protected static ?string $model = Package::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWifi;
+
+    protected static ?int $navigationSort = 2;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return 'Subscription';
+    }
+
+    public static function getModelLabel(): string
+    {
+        return 'Package';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Packages';
+    }
 
     public static function form(Schema $schema): Schema
     {
