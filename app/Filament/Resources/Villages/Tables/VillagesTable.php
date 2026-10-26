@@ -14,15 +14,20 @@ class VillagesTable
     {
         return $table
             ->columns([
+                TextColumn::make('name')
+                    ->label('Name')
+                    ->searchable(),
                 TextColumn::make('district.name')
                     ->label('District')
                     ->searchable(),
                 TextColumn::make('prefixArea.prefix')
-                    ->label('Prefix')
+                    ->label('Prefix area')
                     ->searchable(),
-                TextColumn::make('name')
-                    ->label('Name')
-                    ->searchable(),
+                TextColumn::make('hamlets_count')
+                    ->label('Hamlets')
+                    ->counts('hamlets')
+                    ->badge()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Created at')
                     ->dateTime()

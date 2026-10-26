@@ -12,15 +12,15 @@ class VillageForm
     {
         return $schema
             ->components([
+                TextInput::make('name')
+                    ->required(),
                 Select::make('district_id')
                     ->label('District')
                     ->relationship('district', 'name')
                     ->required(),
                 Select::make('prefix_area_id')
                     ->label('Prefix area')
-                    ->relationship('prefixArea', 'id')
-                    ->required(),
-                TextInput::make('name')
+                    ->relationship('prefixArea', 'prefix')
                     ->required(),
             ]);
     }
