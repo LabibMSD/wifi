@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('prefix_areas', function (Blueprint $table) {
             $table->id();
             $table->string('prefix')->unique();
-            $table->text('descriptions');
             $table->timestamps();
         });
     }

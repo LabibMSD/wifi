@@ -18,7 +18,6 @@ class PrefixAreaSeeder extends Seeder
         foreach (['AA', 'BB', 'CC', 'DD', 'EE'] as $prefix) {
             PrefixArea::factory()->create([
                 'prefix' => $prefix,
-                'descriptions' => "Prefix area for {$prefix}",
             ]);
         }
     }

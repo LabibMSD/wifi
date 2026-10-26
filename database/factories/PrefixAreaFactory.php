@@ -19,7 +19,6 @@ class PrefixAreaFactory extends Factory
     {
         return [
             'prefix' => strtoupper(fake()->unique()->lexify('??')),
-            'descriptions' => fake()->sentence(),
         ];
     }
 }
