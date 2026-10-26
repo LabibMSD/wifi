@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
             $table->integer('speed_mbps');
-            $table->decimal('price', 12, 2);
+            $table->decimal('price', 12, 0);
             $table->timestamps();
         });
     }

@@ -19,7 +19,7 @@ class Package extends Model
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2',
+            'price' => 'decimal:0',
         ];
     }
 

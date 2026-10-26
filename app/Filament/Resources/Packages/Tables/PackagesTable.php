@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Packages\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -15,13 +16,13 @@ class PackagesTable
         return $table
             ->columns([
                 TextColumn::make('speed_mbps')
-                    ->label('Speed Mbps')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Speed')
+                    ->suffix(' Mbps')
+                    ->searchable(),
                 TextColumn::make('price')
                     ->label('Price')
-                    ->money()
-                    ->sortable(),
+                    ->money('IDR', decimalPlaces: 0)
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->label('Created at')
                     ->dateTime()
@@ -38,6 +39,7 @@ class PackagesTable
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
