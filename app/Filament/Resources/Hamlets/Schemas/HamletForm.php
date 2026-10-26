@@ -12,12 +12,12 @@ class HamletForm
     {
         return $schema
             ->components([
+                TextInput::make('name')
+                    ->label('Name')
+                    ->required(),
                 Select::make('village_id')
                     ->label('Village')
                     ->relationship('village', 'name')
-                    ->required(),
-                TextInput::make('name')
-                    ->label('Name')
                     ->required(),
             ]);
     }

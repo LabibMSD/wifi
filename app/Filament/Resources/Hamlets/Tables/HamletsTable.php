@@ -14,11 +14,14 @@ class HamletsTable
     {
         return $table
             ->columns([
+                TextColumn::make('name')
+                    ->label('Name')
+                    ->searchable(),
                 TextColumn::make('village.name')
                     ->label('Village')
                     ->searchable(),
-                TextColumn::make('name')
-                    ->label('Name')
+                TextColumn::make('village.district.name')
+                    ->label('District')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->label('Created at')
