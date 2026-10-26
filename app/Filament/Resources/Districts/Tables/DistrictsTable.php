@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Districts\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -17,6 +18,16 @@ class DistrictsTable
                 TextColumn::make('name')
                     ->label('Name')
                     ->searchable(),
+                TextColumn::make('villages_count')
+                    ->label('Villages')
+                    ->counts('villages')
+                    ->badge()
+                    ->sortable(),
+                TextColumn::make('hamlets_count')
+                    ->label('Hamlets')
+                    ->counts('hamlets')
+                    ->badge()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Created at')
                     ->dateTime()
@@ -33,6 +44,7 @@ class DistrictsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
