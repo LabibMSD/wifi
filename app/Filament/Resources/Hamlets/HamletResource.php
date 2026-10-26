@@ -25,17 +25,17 @@ class HamletResource extends Resource
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return 'Region';
+        return __('general.navigation.region');
     }
 
     public static function getModelLabel(): string
     {
-        return 'Hamlet';
+        return __('hamlets.labels.model');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Hamlets';
+        return __('hamlets.labels.plural_model');
     }
 
     public static function form(Schema $schema): Schema

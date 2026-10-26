@@ -12,7 +12,7 @@ class DistrictForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('Name')
+                    ->label(__('general.fields.name'))
                     ->required(),
             ]);
     }

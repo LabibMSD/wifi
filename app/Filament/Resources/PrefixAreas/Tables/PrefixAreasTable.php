@@ -16,18 +16,18 @@ class PrefixAreasTable
         return $table
             ->columns([
                 TextColumn::make('prefix')
-                    ->label('Prefix')
+                    ->label(__('prefix_areas.fields.prefix'))
                     ->searchable(),
                 TextColumn::make('villages.name')
-                    ->label('Village')
+                    ->label(__('prefix_areas.fields.village'))
                     ->badge(),
                 TextColumn::make('created_at')
-                    ->label('Created at')
+                    ->label(__('general.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label('Updated at')
+                    ->label(__('general.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -13,13 +13,13 @@ class PackageForm
         return $schema
             ->components([
                 TextInput::make('speed_mbps')
-                    ->label('Speed Mbps')
+                    ->label(__('packages.fields.speed'))
                     ->suffix('Mbps')
                     ->required()
                     ->numeric(),
                 TextInput::make('price')
-                    ->label('Price')
-                    ->prefix('Rp')
+                    ->label(__('packages.fields.price'))
+                    ->prefix(config('business.currency_symbol'))
                     ->required()
                     ->numeric()
                     ->minValue(0)

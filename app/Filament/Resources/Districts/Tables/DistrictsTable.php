@@ -16,25 +16,25 @@ class DistrictsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label(__('general.fields.name'))
                     ->searchable(),
                 TextColumn::make('villages_count')
-                    ->label('Villages')
+                    ->label(__('districts.fields.villages'))
                     ->counts('villages')
                     ->badge()
                     ->sortable(),
                 TextColumn::make('hamlets_count')
-                    ->label('Hamlets')
+                    ->label(__('districts.fields.hamlets'))
                     ->counts('hamlets')
                     ->badge()
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('Created at')
+                    ->label(__('general.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label('Updated at')
+                    ->label(__('general.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

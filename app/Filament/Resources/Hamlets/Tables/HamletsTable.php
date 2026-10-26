@@ -15,21 +15,21 @@ class HamletsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label(__('general.fields.name'))
                     ->searchable(),
                 TextColumn::make('village.name')
-                    ->label('Village')
+                    ->label(__('hamlets.fields.village'))
                     ->searchable(),
                 TextColumn::make('village.district.name')
-                    ->label('District')
+                    ->label(__('hamlets.fields.district'))
                     ->searchable(),
                 TextColumn::make('created_at')
-                    ->label('Created at')
+                    ->label(__('general.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label('Updated at')
+                    ->label(__('general.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

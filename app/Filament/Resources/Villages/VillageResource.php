@@ -25,17 +25,17 @@ class VillageResource extends Resource
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return 'Region';
+        return __('general.navigation.region');
     }
 
     public static function getModelLabel(): string
     {
-        return 'Village';
+        return __('villages.labels.model');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Villages';
+        return __('villages.labels.plural_model');
     }
 
     public static function form(Schema $schema): Schema

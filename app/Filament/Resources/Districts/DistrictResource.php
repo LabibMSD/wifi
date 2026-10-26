@@ -25,17 +25,17 @@ class DistrictResource extends Resource
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return 'Region';
+        return __('general.navigation.region');
     }
 
     public static function getModelLabel(): string
     {
-        return 'District';
+        return __('districts.labels.model');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Districts';
+        return __('districts.labels.plural_model');
     }
 
     public static function form(Schema $schema): Schema

@@ -26,7 +26,10 @@ class Package extends Model
     protected function displayName(): Attribute
     {
         return Attribute::make(
-            get: fn () => "{$this->speed_mbps} Mbps - Rp ".number_format($this->price, 0, ',', '.')
+            get: fn () => __('packages.values.display_name', [
+                'speed' => $this->speed_mbps,
+                'price' => config('business.currency_symbol').' '.number_format($this->price, 0, ',', '.'),
+            ])
         );
     }
 

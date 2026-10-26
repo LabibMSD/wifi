@@ -25,17 +25,17 @@ class PrefixAreaResource extends Resource
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return 'Region';
+        return __('general.navigation.region');
     }
 
     public static function getModelLabel(): string
     {
-        return 'Prefix Area';
+        return __('prefix_areas.labels.model');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Prefix Areas';
+        return __('prefix_areas.labels.plural_model');
     }
 
     public static function form(Schema $schema): Schema

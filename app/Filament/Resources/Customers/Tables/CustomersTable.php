@@ -17,32 +17,32 @@ class CustomersTable
         return $table
             ->columns([
                 TextColumn::make('code')
-                    ->label('Code')
+                    ->label(__('customers.fields.code'))
                     ->searchable(),
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label(__('general.fields.name'))
                     ->searchable(),
                 TextColumn::make('hamlet.village.district.name')
-                    ->label('District')
+                    ->label(__('customers.fields.district'))
                     ->searchable(),
                 TextColumn::make('hamlet.village.name')
-                    ->label('Village')
+                    ->label(__('customers.fields.village'))
                     ->searchable(),
                 TextColumn::make('hamlet.name')
-                    ->label('Hamlet')
+                    ->label(__('customers.fields.hamlet'))
                     ->searchable(),
                 TextColumn::make('package.display_name')
-                    ->label('Package'),
+                    ->label(__('customers.fields.package')),
                 TextColumn::make('system')
-                    ->label('System')
+                    ->label(__('customers.fields.system'))
                     ->state(Customer::SYSTEM),
                 TextColumn::make('created_at')
-                    ->label('Created at')
+                    ->label(__('general.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label('Updated at')
+                    ->label(__('general.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

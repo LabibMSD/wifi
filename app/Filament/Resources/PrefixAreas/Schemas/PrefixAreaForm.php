@@ -14,11 +14,11 @@ class PrefixAreaForm
         return $schema
             ->components([
                 TextInput::make('prefix')
-                    ->label('Prefix')
+                    ->label(__('prefix_areas.fields.prefix'))
                     ->required()
                     ->dehydrateStateUsing(fn ($state) => Str::upper(trim($state)))
                     ->disabledOn(Operation::Edit)
-                    ->helperText('Starting letters of customer codes (e.g. BW, PT, SK). Cannot be changed after saving.'),
+                    ->helperText(__('prefix_areas.help.prefix')),
             ]);
     }
 }

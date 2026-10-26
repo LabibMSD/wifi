@@ -13,13 +13,14 @@ class VillageForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(__('general.fields.name'))
                     ->required(),
                 Select::make('district_id')
-                    ->label('District')
+                    ->label(__('villages.fields.district'))
                     ->relationship('district', 'name')
                     ->required(),
                 Select::make('prefix_area_id')
-                    ->label('Prefix area')
+                    ->label(__('villages.fields.prefix_area'))
                     ->relationship('prefixArea', 'prefix')
                     ->required(),
             ]);
