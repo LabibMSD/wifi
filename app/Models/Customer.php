@@ -30,8 +30,19 @@ class Customer extends Model
                 SequenceConfig::create()
                     ->prefix($prefix)
                     ->groupBy($prefix)
+                    ->range($this->nextSequenceNumber($prefix))
                     ->padLength(5)
             );
+    }
+
+    private function nextSequenceNumber(string $prefix): int
+    {
+        $highestNumber = static::query()
+            ->where('code', 'like', "{$prefix}%")
+            ->selectRaw('MAX(CAST(SUBSTRING(code, ?) AS UNSIGNED)) AS max_sequence', [strlen($prefix) + 1])
+            ->value('max_sequence');
+
+        return ((int) $highestNumber) + 1;
     }
 
     public function save(array $options = []): bool

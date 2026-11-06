@@ -11,7 +11,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Support\Enums\Operation;
 use Illuminate\Database\Eloquent\Model;
 
 class CustomerForm
@@ -22,9 +21,7 @@ class CustomerForm
             ->components([
                 TextInput::make('code')
                     ->label(__('customers.fields.code'))
-                    ->required()
-                    ->hiddenOn(Operation::Create)
-                    ->disabled(),
+                    ->required(),
                 TextInput::make('name')
                     ->label(__('general.fields.name'))
                     ->required(),
