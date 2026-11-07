@@ -44,4 +44,7 @@ return [
             'prefix' => 'Area prefix',
         ],
     ],
+    'spreadsheet' => [
+        'sheet_name' => 'Customer Data',
+    ],
 ];

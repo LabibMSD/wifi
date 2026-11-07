@@ -44,4 +44,7 @@ return [
             'prefix' => 'Prefix area',
         ],
     ],
+    'spreadsheet' => [
+        'sheet_name' => 'Data Pelanggan',
+    ],
 ];
