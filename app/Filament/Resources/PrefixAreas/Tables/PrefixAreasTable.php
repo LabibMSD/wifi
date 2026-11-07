@@ -17,7 +17,8 @@ class PrefixAreasTable
             ->columns([
                 TextColumn::make('prefix')
                     ->label(__('prefix_areas.fields.prefix'))
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('villages.name')
                     ->label(__('prefix_areas.fields.village'))
                     ->badge(),

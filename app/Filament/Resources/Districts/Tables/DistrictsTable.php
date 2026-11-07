@@ -17,7 +17,8 @@ class DistrictsTable
             ->columns([
                 TextColumn::make('name')
                     ->label(__('general.fields.name'))
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('villages_count')
                     ->label(__('districts.fields.villages'))
                     ->counts('villages')

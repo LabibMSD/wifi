@@ -18,11 +18,13 @@ class PackagesTable
                 TextColumn::make('speed_mbps')
                     ->label(__('packages.fields.speed'))
                     ->suffix(' Mbps')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('price')
                     ->label(__('packages.fields.price'))
                     ->money('IDR', decimalPlaces: 0)
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label(__('general.fields.created_at'))
                     ->dateTime()
