@@ -106,6 +106,20 @@ it('imports a customer from the customer CSV columns', function () {
     ]);
 });
 
+it('imports customer data when the code column is named KODE', function () {
+    $row = array_replace(CUSTOMER_IMPORT_ROW, ['KODE' => 'SK00006']);
+    unset($row['ID']);
+
+    CustomerImporter::test(CustomerImporter::guessColumnMap(array_keys($row)))
+        ->import($row)
+        ->assertImported();
+
+    $this->assertDatabaseHas('customers', [
+        'code' => 'SK00006',
+        'name' => 'TRI FIRDIYANTI',
+    ]);
+});
+
 it('reads the selected Excel worksheet headers and rows', function () {
     $headers = array_keys(CUSTOMER_IMPORT_ROW);
     $secondRow = array_values(array_replace(CUSTOMER_IMPORT_ROW, ['NAMA' => 'Second customer']));
@@ -583,7 +597,7 @@ it('downloads failed customer rows as an editable xlsx file by default', functio
             'ID' => 'SK00006',
             'NAMA' => 'TRI FIRDIYANTI',
         ],
-        'validation_error' => 'ID pelanggan sudah digunakan.',
+        'validation_error' => 'Pelanggan tidak dapat diimpor karena kode pelanggan sudah terdaftar di database.',
     ]);
 
     $response = CustomerImporter::getFailedRowsDownloader()($import);
@@ -606,8 +620,8 @@ it('downloads failed customer rows as an editable xlsx file by default', functio
             'format' => 'xlsx',
         ]));
         expect(CustomerImportFileReader::getHeaders($filePath))->toBe([
+            'KODE',
             'NAMA',
-            'ID',
             'DUSUN',
             'DESA',
             'KECAMATAN',
@@ -616,6 +630,42 @@ it('downloads failed customer rows as an editable xlsx file by default', functio
             'SYSTEM',
             'ALASAN GAGAL',
         ]);
+        expect(CustomerImporter::guessColumnMap(CustomerImportFileReader::getHeaders($filePath))['code'])->toBe('KODE');
+
+        $archive = new ZipArchive;
+        expect($archive->open($filePath))->toBeTrue();
+
+        try {
+            $worksheet = $archive->getFromName('xl/worksheets/sheet1.xml');
+            $styles = $archive->getFromName('xl/styles.xml');
+            preg_match('/<c r="A1" s="(\d+)"/', $worksheet, $firstHeaderCell);
+            preg_match('/<c r="I1" s="(\d+)"/', $worksheet, $failureReasonHeaderCell);
+            preg_match('/<cellXfs[^>]*>(.*?)<\/cellXfs>/s', $styles, $cellXfs);
+            preg_match_all('/<xf\b[^>]*\/>|<xf\b[^>]*>.*?<\/xf>/s', $cellXfs[1], $cellStyles);
+            preg_match_all('/<col min="(\d+)" max="(\d+)" width="([^"]+)"/', $worksheet, $columnWidths);
+
+            expect($worksheet)->toContain('ySplit="1"');
+            expect($worksheet)->toContain('showGridLines="true"');
+            expect($worksheet)->toContain('ref="A1:I2"');
+            expect($worksheet)->not->toContain(' ht="');
+            expect($worksheet)->toContain('customHeight="0"');
+            expect($worksheet)->toContain('<c r="G2"');
+            expect($worksheet)->toContain('<v>175000</v>');
+            expect($columnWidths[3])->toBe(['16', '40', '24', '24', '20', '16', '20', '16', '82']);
+            expect((float) $columnWidths[3][8])->toBeGreaterThan(mb_strlen(
+                'Pelanggan tidak dapat diimpor karena kode pelanggan sudah terdaftar di database.',
+            ));
+            expect($cellStyles[0][(int) $failureReasonHeaderCell[1]])
+                ->toContain('horizontal="left"');
+            expect($cellStyles[0][(int) $firstHeaderCell[1]])
+                ->toContain('horizontal="center"');
+            expect($styles)->toContain('D6DCE4');
+            expect($styles)->toContain('FEF3C7');
+            expect($styles)->toContain('style="thin"');
+            expect($styles)->toContain('formatCode="&quot;Rp.&quot; #,##0"');
+        } finally {
+            $archive->close();
+        }
 
         $stream = CustomerImportFileReader::getCsvStream($filePath);
 
@@ -624,15 +674,15 @@ it('downloads failed customer rows as an editable xlsx file by default', functio
             $reader->setHeaderOffset(0);
 
             expect(array_values(iterator_to_array($reader->getRecords())))->toBe([[
+                'KODE' => 'SK00006',
                 'NAMA' => 'TRI FIRDIYANTI',
-                'ID' => 'SK00006',
                 'DUSUN' => 'DAYA BATA',
                 'DESA' => 'SAWAH MULYA',
                 'KECAMATAN' => 'SANGKAPURA',
                 'PAKET' => '5 MBPS',
-                'HARGA' => 'Rp175,000',
+                'HARGA' => '175000',
                 'SYSTEM' => 'PPOE',
-                'ALASAN GAGAL' => 'ID pelanggan sudah digunakan.',
+                'ALASAN GAGAL' => 'Pelanggan tidak dapat diimpor karena kode pelanggan sudah terdaftar di database.',
             ]]);
         } finally {
             fclose($stream);
@@ -680,7 +730,7 @@ it('downloads failed customer rows as a semicolon-delimited CSV with readable co
     $import->failedRows()->create([
         'data' => [
             'SYSTEM' => 'PPOE',
-            'HARGA' => 'Rp175,000',
+            'HARGA' => 'Rp. 175.000',
             'KECAMATAN' => 'SANGKAPURA',
             'PAKET' => '5 MBPS',
             'DESA' => 'SAWAH MULYA',
@@ -710,8 +760,8 @@ it('downloads failed customer rows as a semicolon-delimited CSV with readable co
         'format' => 'csv',
     ]));
     expect(array_keys($rows[0]))->toBe([
+        'KODE',
         'NAMA',
-        'ID',
         'DUSUN',
         'DESA',
         'KECAMATAN',
@@ -721,13 +771,13 @@ it('downloads failed customer rows as a semicolon-delimited CSV with readable co
         'ALASAN GAGAL',
     ]);
     expect($rows[0])->toBe([
+        'KODE' => 'SK00006',
         'NAMA' => 'TRI FIRDIYANTI',
-        'ID' => 'SK00006',
         'DUSUN' => 'DAYA BATA',
         'DESA' => 'SAWAH MULYA',
         'KECAMATAN' => 'SANGKAPURA',
         'PAKET' => '5 MBPS',
-        'HARGA' => 'Rp175,000',
+        'HARGA' => 'Rp. 175.000',
         'SYSTEM' => 'PPOE',
         'ALASAN GAGAL' => 'ID pelanggan sudah digunakan.',
     ]);
@@ -773,8 +823,8 @@ it('allows editing and reimporting a failed CSV while replacing the previous fai
     $rows = array_values(iterator_to_array($csv->getRecords()));
 
     expect(array_keys($rows[0]))->toBe([
+        'KODE',
         'NAMA',
-        'ID',
         'DUSUN',
         'DESA',
         'KECAMATAN',
@@ -786,7 +836,7 @@ it('allows editing and reimporting a failed CSV while replacing the previous fai
     expect($rows[0]['ALASAN GAGAL'])->toBe(__('customers.import.invalid_system'));
     $rows[0]['SYSTEM'] = 'PPOE';
 
-    CustomerImporter::test(CUSTOMER_IMPORT_COLUMN_MAP)
+    CustomerImporter::test(array_replace(CUSTOMER_IMPORT_COLUMN_MAP, ['code' => 'KODE']))
         ->import($rows[0])
         ->assertImported();
 
