@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\CustomersPerPackageChart;
+use App\Filament\Widgets\DashboardStatsWidget;
+use App\Filament\Widgets\PackageSpeedVsPriceChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -40,6 +43,9 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
+                DashboardStatsWidget::class,
+                CustomersPerPackageChart::class,
+                PackageSpeedVsPriceChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,
