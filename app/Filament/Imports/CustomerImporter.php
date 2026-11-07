@@ -70,7 +70,7 @@ class CustomerImporter extends Importer
         return [
             ImportColumn::make('code')
                 ->label(__('customers.fields.code'))
-                ->guess(['ID'])
+                ->guess(['KODE', 'CODE', 'ID'])
                 ->requiredMapping()
                 ->castStateUsing(fn (mixed $state): mixed => is_string($state) ? trim($state) : $state)
                 ->rules([
@@ -102,7 +102,9 @@ class CustomerImporter extends Importer
                 ->label(__('customers.fields.package'))
                 ->guess(['PAKET'])
                 ->requiredMapping()
-                ->integer()
+                ->castStateUsing(fn (mixed $state): mixed => blank($state)
+                    ? $state
+                    : (int) preg_replace('/\D/', '', (string) $state))
                 ->fillRecordUsing(function (Customer $record, int $state, array $data): void {
                     $package = self::findOrCreatePackage($state, $data);
 

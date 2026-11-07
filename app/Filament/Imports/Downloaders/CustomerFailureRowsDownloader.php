@@ -2,13 +2,13 @@
 
 namespace App\Filament\Imports\Downloaders;
 
+use App\Filament\Resources\Customers\CustomerSpreadsheetLayout;
 use Filament\Actions\Imports\Downloaders\Contracts\Downloader;
 use Filament\Actions\Imports\Models\FailedImportRow;
 use Filament\Actions\Imports\Models\Import;
 use Illuminate\Support\Facades\Lang;
 use League\Csv\Bom;
 use League\Csv\Writer;
-use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer as XlsxWriter;
 use RuntimeException;
 use SplTempFileObject;
@@ -22,8 +22,8 @@ class CustomerFailureRowsDownloader implements Downloader
      * @var array<int, string>
      */
     private const array CUSTOMER_COLUMN_ORDER = [
+        'KODE',
         'NAMA',
-        'ID',
         'DUSUN',
         'DESA',
         'KECAMATAN',
@@ -85,18 +85,51 @@ class CustomerFailureRowsDownloader implements Downloader
         }
 
         $headers = $this->getHeaders($import);
+        $failedRowsCount = $import->failedRows()->count();
         $writer = new XlsxWriter;
         $writer->openToFile($temporaryPath);
-        $writer->addRow(Row::fromValues([
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setName(__('customers.spreadsheet.sheet_name'));
+        $headersWithFailureReason = [
             ...$headers,
             __('customers.import.failure_reason_header'),
-        ]));
+        ];
+        $writer->addRow(CustomerSpreadsheetLayout::failureHeaderRow(
+            $headersWithFailureReason,
+            __('customers.import.failure_reason_header'),
+        ));
+
+        $failureReasonHeader = __('customers.import.failure_reason_header');
+        $longestFailureReasonLength = mb_strlen($failureReasonHeader);
 
         $import->failedRows()
             ->lazyById(100)
-            ->each(function (FailedImportRow $failedImportRow) use ($writer, $headers): void {
-                $writer->addRow(Row::fromValues($this->rowValues($failedImportRow, $headers)));
+            ->each(function (FailedImportRow $failedImportRow) use (
+                $writer,
+                $headers,
+                &$longestFailureReasonLength,
+            ): void {
+                $rowValues = $this->rowValues($failedImportRow, $headers, formatForXlsx: true);
+                $failureReason = $rowValues[array_key_last($rowValues)];
+                $longestFailureReasonLength = max($longestFailureReasonLength, mb_strlen((string) $failureReason));
+
+                $writer->addRow(CustomerSpreadsheetLayout::dataRow(
+                    $rowValues,
+                    hasFailureReason: true,
+                ));
             });
+
+        CustomerSpreadsheetLayout::configureSheet(
+            $sheet,
+            $failedRowsCount,
+            $headersWithFailureReason,
+            [
+                $failureReasonHeader => CustomerSpreadsheetLayout::fitColumnWidth(
+                    $failureReasonHeader,
+                    $longestFailureReasonLength,
+                ),
+            ],
+        );
 
         $writer->close();
 
@@ -122,10 +155,13 @@ class CustomerFailureRowsDownloader implements Downloader
      * @param  array<int, string>  $headers
      * @return array<int, mixed>
      */
-    private function rowValues(FailedImportRow $failedImportRow, array $headers): array
-    {
+    private function rowValues(
+        FailedImportRow $failedImportRow,
+        array $headers,
+        bool $formatForXlsx = false,
+    ): array {
         $row = array_map(
-            fn (string $header): mixed => $failedImportRow->data[$header] ?? '',
+            fn (string $header): mixed => $this->getValueForHeader($failedImportRow, $header, $formatForXlsx),
             $headers,
         );
 
@@ -133,6 +169,29 @@ class CustomerFailureRowsDownloader implements Downloader
             ...$row,
             $failedImportRow->validation_error ?? __('filament-actions::import.failure_csv.system_error'),
         ];
+    }
+
+    private function getValueForHeader(
+        FailedImportRow $failedImportRow,
+        string $header,
+        bool $formatForXlsx,
+    ): mixed {
+        if ($header === 'HARGA') {
+            $price = $failedImportRow->data[$header] ?? '';
+
+            return $formatForXlsx
+                ? CustomerSpreadsheetLayout::toNumericPrice($price)
+                : CustomerSpreadsheetLayout::formatPrice($price);
+        }
+
+        if ($header !== 'KODE') {
+            return $failedImportRow->data[$header] ?? '';
+        }
+
+        return $failedImportRow->data['KODE']
+            ?? $failedImportRow->data['CODE']
+            ?? $failedImportRow->data['ID']
+            ?? '';
     }
 
     private function getFileName(Import $import, string $format): string
@@ -154,6 +213,13 @@ class CustomerFailureRowsDownloader implements Downloader
             Lang::get('customers.import.failure_reason_header', [], 'id'),
         ];
         $headers = array_values(array_diff($headers, $failureReasonHeaders));
+        $headers = array_map(
+            fn (string $header): string => in_array(strtoupper(trim($header)), ['CODE', 'ID'], true)
+                ? 'KODE'
+                : $header,
+            $headers,
+        );
+        $headers = array_values(array_unique($headers));
         $knownHeaders = array_values(array_intersect(self::CUSTOMER_COLUMN_ORDER, $headers));
         $otherHeaders = array_values(array_diff($headers, $knownHeaders));
 

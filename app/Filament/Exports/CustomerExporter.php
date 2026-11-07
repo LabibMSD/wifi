@@ -2,6 +2,7 @@
 
 namespace App\Filament\Exports;
 
+use App\Filament\Resources\Customers\CustomerSpreadsheetLayout;
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\Hamlet;
@@ -18,6 +19,10 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Number;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\XLSX\Options as XlsxWriterOptions;
+use OpenSpout\Writer\XLSX\Writer as XlsxWriter;
 
 class CustomerExporter extends Exporter
 {
@@ -26,11 +31,11 @@ class CustomerExporter extends Exporter
     public static function getColumns(): array
     {
         return [
+            ExportColumn::make('code')
+                ->label('KODE')
+                ->preventFormulaInjection(),
             ExportColumn::make('name')
                 ->label('NAMA')
-                ->preventFormulaInjection(),
-            ExportColumn::make('code')
-                ->label('ID')
                 ->preventFormulaInjection(),
             ExportColumn::make('hamlet.name')
                 ->label('DUSUN')
@@ -42,7 +47,8 @@ class CustomerExporter extends Exporter
                 ->label('KECAMATAN')
                 ->preventFormulaInjection(),
             ExportColumn::make('package.speed_mbps')
-                ->label('PAKET'),
+                ->label('PAKET')
+                ->formatStateUsing(fn (mixed $state): string => (int) $state.' MBPS'),
             ExportColumn::make('package.price')
                 ->label('HARGA'),
             ExportColumn::make('system')
@@ -50,6 +56,67 @@ class CustomerExporter extends Exporter
                 ->state(fn (): string => Customer::SYSTEM)
                 ->preventFormulaInjection(),
         ];
+    }
+
+    public function getXlsxWriterOptions(): ?XlsxWriterOptions
+    {
+        $options = new XlsxWriterOptions;
+        CustomerSpreadsheetLayout::configureOptions($options, self::getColumnLabels());
+
+        return $options;
+    }
+
+    public function getXlsxCellStyle(): ?Style
+    {
+        return CustomerSpreadsheetLayout::bodyStyle();
+    }
+
+    public function getXlsxHeaderCellStyle(): ?Style
+    {
+        return CustomerSpreadsheetLayout::headerStyle();
+    }
+
+    public function makeXlsxRow(array $values, ?Style $style = null): Row
+    {
+        $priceColumnIndex = array_search('package.price', array_keys($this->columnMap), true);
+
+        if ($priceColumnIndex !== false) {
+            $values[$priceColumnIndex] = CustomerSpreadsheetLayout::toNumericPrice($values[$priceColumnIndex] ?? null);
+        }
+
+        return CustomerSpreadsheetLayout::dataRow(
+            $values,
+            rowStyle: $style,
+            priceColumnIndex: $priceColumnIndex === false ? null : $priceColumnIndex,
+        );
+    }
+
+    public function makeXlsxHeaderRow(array $values, ?Style $style = null): Row
+    {
+        return CustomerSpreadsheetLayout::headerRow($values, $style);
+    }
+
+    public function configureXlsxWriterBeforeClose(XlsxWriter $writer): XlsxWriter
+    {
+        CustomerSpreadsheetLayout::configureSheet(
+            $writer->getCurrentSheet(),
+            $this->export->total_rows,
+            self::getColumnLabels(),
+        );
+        $writer->getCurrentSheet()->setName(__('customers.spreadsheet.sheet_name'));
+
+        return $writer;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private static function getColumnLabels(): array
+    {
+        return array_map(
+            fn (ExportColumn $column): string => (string) $column->getLabel(),
+            self::getColumns(),
+        );
     }
 
     public static function getOptionsFormComponents(): array
