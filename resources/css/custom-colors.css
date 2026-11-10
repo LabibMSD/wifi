@@ -1,0 +1,16 @@
+/* Eponet brand colors - organic, hand-drawn aesthetic */
+:root {
+  --color-yellow: #fbbf24;    /* bright yellow from logo */
+  --color-orange: #f97316;    /* orange-red from logo */
+  --color-blue: #3b82f6;      /* medium blue from orbital */
+  --color-cyan: #06b6d4;      /* cyan accent */
+  --color-green: #22c55e;     /* green from tail */
+  --color-gray-light: #f3f4f6; /* light gray */
+  --color-gray-medium: #6b7280; /* medium gray */
+}
+
+/* Custom color CSS utilities */
+.yellow-ring { color: var(--color-yellow); }
+.orange-node { color: var(--color-orange); }
+.blue-orbital { color: var(--color-blue); }
+.green-tail { color: var(--color-green); }

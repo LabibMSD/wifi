@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Filament\Resources\Customers\Schemas;
+
+use App\Models\District;
+use App\Models\Hamlet;
+use App\Models\Package;
+use App\Models\Village;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
+
+class CustomerForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextInput::make('code')
+                    ->label(__('customers.fields.code'))
+                    ->required(),
+                TextInput::make('name')
+                    ->label(__('general.fields.name'))
+                    ->required(),
+                Select::make('district_id')
+                    ->label(__('customers.fields.district'))
+                    ->options(fn () => District::orderBy('name')->pluck('name', 'id'))
+                    ->searchable()
+                    ->afterStateHydrated(fn (Select $component, ?Model $record) => $component->state($record?->hamlet?->village?->district_id))
+                    ->afterStateUpdated(function (Set $set) {
+                        $set('village_id', null);
+                        $set('hamlet_id', null);
+                    })
+                    ->dehydrated(false)
+                    ->required()
+                    ->live(),
+                Select::make('village_id')
+                    ->label(__('customers.fields.village'))
+                    ->options(fn (Get $get) => Village::where('district_id', $get('district_id'))
+                        ->orderBy('name')->pluck('name', 'id'))
+                    ->searchable()
+                    ->afterStateHydrated(fn (Select $component, ?Model $record) => $component->state($record?->hamlet?->village_id))
+                    ->afterStateUpdated(fn (Set $set) => $set('hamlet_id', null))
+                    ->disabled(fn (Get $get) => blank($get('district_id')))
+                    ->dehydrated(false)
+                    ->required()
+                    ->live(),
+                Select::make('hamlet_id')
+                    ->label(__('customers.fields.hamlet'))
+                    ->options(fn (Get $get) => Hamlet::where('village_id', $get('village_id'))
+                        ->orderBy('name')->pluck('name', 'id'))
+                    ->searchable()
+                    ->disabled(fn (Get $get) => blank($get('village_id')))
+                    ->required(),
+                Select::make('package_id')
+                    ->label(__('customers.fields.package'))
+                    ->relationship('package')
+                    ->getOptionLabelFromRecordUsing(fn (Package $record) => $record->display_name)
+                    ->required(),
+            ]);
+    }
+}

@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+#[Fillable(['district_id', 'prefix_area_id', 'name'])]
+class Village extends Model
+{
+    /** @use HasFactory<\Database\Factories\VillageFactory> */
+    use HasFactory;
+
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    public function prefixArea(): BelongsTo
+    {
+        return $this->belongsTo(PrefixArea::class);
+    }
+
+    public function hamlets(): HasMany
+    {
+        return $this->hasMany(Hamlet::class);
+    }
+}
